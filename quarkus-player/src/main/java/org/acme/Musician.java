@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Musician {
