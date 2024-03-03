@@ -13,7 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Musician {
     private static final Logger LOGGER = Logger.getLogger("Musician");
-    private final Queue<Long> beatTimes = new CircularQueue<>(3);
     private final String patternToPlay;
 
     private long tempo = 100;
@@ -32,24 +31,7 @@ public class Musician {
     }
 
     public void beat(short number) {
-        beatTimes.add(System.currentTimeMillis());
-        List<Long> list = beatTimes.stream().toList();
-        if (list.size() > 2) {
-            double averageDiff = 0;
-            for (int i = 1; i < list.size(); i++) {
-                final long first = list.get(i - 1);
-                final long second = list.get(i);
-                averageDiff += (second - first);
-            }
-            long newTempo = Math.round(60000 / (averageDiff / (list.size() - 1)));
-            if (newTempo != tempo) {
-                LOGGER.info("New tempo detected: " + newTempo);
-                tempo = newTempo;
-            }
-        }
-        if (tempo > 0) {
-            play(number);
-        }
+        play(number);
     }
 
     public void play(short number) {
