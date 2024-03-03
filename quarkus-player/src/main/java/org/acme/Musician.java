@@ -14,16 +14,21 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Musician {
     private static final Logger LOGGER = Logger.getLogger("Musician");
     private final Queue<Long> beatTimes = new CircularQueue<>(3);
+    private final String patternToPlay;
 
     private long tempo = 100;
 
     private final List<File> wavs;
 
 
-    public Musician(File folder, String kind) {
+    public Musician(File folder, String kind, String patternToPlay) {
+        this.patternToPlay = patternToPlay;
         wavs = Arrays.stream(Objects.requireNonNull(folder.listFiles()))
                 .filter(f -> f.getName().contains(kind))
                 .toList();
+        if (wavs.isEmpty()) {
+            throw new RuntimeException("No wavs found for " + kind);
+        }
     }
 
     public void beat(short number) {
@@ -43,11 +48,15 @@ public class Musician {
             }
         }
         if (tempo > 0) {
-            play();
+            play(number);
         }
     }
 
-    public void play() {
+    public void play(short number) {
+        char c = patternToPlay.charAt(number - 1);
+        if (c != 'x') {
+            return;
+        }
         try {
             int randomElementIndex = ThreadLocalRandom.current().nextInt(wavs.size()) % wavs.size();
             AudioInputStream stream = AudioSystem.getAudioInputStream(wavs.get(randomElementIndex));

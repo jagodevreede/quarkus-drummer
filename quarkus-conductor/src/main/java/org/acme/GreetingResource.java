@@ -14,7 +14,7 @@ import java.util.List;
 public class GreetingResource {
     private static final Logger LOGGER = Logger.getLogger("GreetingResource");
 
-    private static final List<String> ALL_INSTRUMENTS = List.of("ClHat");
+    private static final List<String> ALL_INSTRUMENTS = List.of("ClHat-08", "Kick-08", "Flam-01");
     private static final List<String> INSTRUMENTS = new ArrayList<>();
 
     @GET

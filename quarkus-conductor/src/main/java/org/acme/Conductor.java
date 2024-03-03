@@ -1,43 +1,38 @@
 package org.acme;
 
+import io.quarkus.scheduler.Scheduled;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
-public class Conductor implements Runnable {
+@ApplicationScoped
+public class Conductor {
     private static final Logger LOGGER = Logger.getLogger("Conductor");
 
     private static final long MS_IN_MINUTE = 60_000;
 
-    private short noOfBeats = 1;
+    private final short tempo = 100;
 
-    private short tempo = 100;
+    @Inject
+    ConductorListener listener;
 
-    private boolean running = true;
-
-    private ConductorListener listener;
-
-    public Conductor(ConductorListener listener) {
-        this.listener = listener;
-    }
-
-    public void stop() {
-        running = false;
-        LOGGER.info("Conductor stopped");
-    }
-
-    @Override
+    @Scheduled(every = "15s")
     public void run() {
+        short currentBeatNumber = 1;
+        int playedBeats = 0;
         LOGGER.info("Starting conductor");
         long lastBeat = System.currentTimeMillis();
         long nextBeat = lastBeat;
-        while (running) {
+        while (playedBeats <= 32) {
+            playedBeats++;
             lastBeat = nextBeat;
             nextBeat = lastBeat + ((MS_IN_MINUTE / tempo / 2));
             sleepUntil(nextBeat);
-            listener.onBeat(noOfBeats);
-            if (noOfBeats >= 8) {
-                noOfBeats = 1;
+            listener.onBeat(currentBeatNumber);
+            if (currentBeatNumber == 8) {
+                currentBeatNumber = 1;
             } else {
-                noOfBeats++;
+                currentBeatNumber++;
             }
         }
         LOGGER.info("Conductor stopped");

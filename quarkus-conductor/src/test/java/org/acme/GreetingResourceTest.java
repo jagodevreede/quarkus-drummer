@@ -15,7 +15,7 @@ class GreetingResourceTest {
                 .get("/hello/tester")
           .then()
              .statusCode(200)
-             .body(is("ClHat"));
+             .body(is("ClHat-01"));
     }
 
 }

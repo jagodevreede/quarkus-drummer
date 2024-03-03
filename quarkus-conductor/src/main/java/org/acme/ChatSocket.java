@@ -57,12 +57,6 @@ public class ChatSocket implements ConductorListener {
         });
     }
 
-    void onStart(@Observes StartupEvent ev) {
-        LOGGER.info("The application is starting...");
-        Conductor conductor = new Conductor(this);
-        managedExecutor.runAsync(conductor);
-    }
-
     @Override
     public void onBeat(short beatNumber) {
         broadcast(String.valueOf(beatNumber));
