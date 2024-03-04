@@ -8,7 +8,6 @@ import jakarta.websocket.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +16,8 @@ import java.net.URISyntaxException;
 
 @ApplicationScoped
 @ClientEndpoint
-public class PlayerStart {
+public class Player {
     private static final org.jboss.logging.Logger LOGGER = Logger.getLogger("PlayerStart");
-    private Session session;
 
     @ConfigProperty(name = "player.name")
     String playerName;
@@ -38,11 +36,13 @@ public class PlayerStart {
     void onStart(@Observes StartupEvent ev) throws DeploymentException, IOException, URISyntaxException {
         var instrumentToPlay = conductorRestClient.hello(playerName);
         LOGGER.info("Got instrument " + instrumentToPlay);
+
         DrumPattern drumPattern = drumPatternRepository.findByName(instrumentToPlay);
         LOGGER.info("Will play pattern " + drumPattern.getPattern());
+
         musician = new Musician(new File(musicFolder), instrumentToPlay, drumPattern.getPattern());
         URI uri = new URI("ws://localhost:8080/chat/" + playerName);
-        session = ContainerProvider.getWebSocketContainer().connectToServer(this, uri);
+        ContainerProvider.getWebSocketContainer().connectToServer(this, uri);
     }
 
     @OnMessage

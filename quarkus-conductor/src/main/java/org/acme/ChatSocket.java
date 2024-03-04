@@ -1,13 +1,12 @@
 package org.acme;
 
-import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.websocket.*;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
-import org.eclipse.microprofile.context.ManagedExecutor;
 import org.jboss.logging.Logger;
 
 import java.util.Map;
@@ -18,9 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatSocket implements ConductorListener {
 
     private static final Logger LOGGER = Logger.getLogger("ChatSocket");
-
-    @Inject
-    ManagedExecutor managedExecutor;
 
     private final static Map<String, Session> sessions = new ConcurrentHashMap<>();
 
@@ -40,11 +36,6 @@ public class ChatSocket implements ConductorListener {
     public void onError(Session session, @PathParam("username") String username, Throwable throwable) {
         sessions.remove(username);
         LOGGER.warn("User " + username + " left on error: " + throwable);
-    }
-
-    @OnMessage
-    public void onMessage(String message, @PathParam("username") String username) {
-        LOGGER.info(">> " + username + ": " + message);
     }
 
     private void broadcast(String message) {

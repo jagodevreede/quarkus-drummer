@@ -11,13 +11,9 @@ import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Musician {
-    private static final Logger LOGGER = Logger.getLogger("Musician");
     private final String patternToPlay;
 
-    private long tempo = 100;
-
     private final List<File> wavs;
-
 
     public Musician(File folder, String kind, String patternToPlay) {
         this.patternToPlay = patternToPlay;
