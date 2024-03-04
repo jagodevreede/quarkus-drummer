@@ -1,7 +1,5 @@
 package org.acme;
 
-import org.jboss.logging.Logger;
-
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;

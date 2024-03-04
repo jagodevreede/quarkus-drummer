@@ -1,5 +1,6 @@
 package org.acme;
 
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -20,6 +21,7 @@ public class GreetingResource {
     @GET
     @Path("{name}")
     @Produces(MediaType.TEXT_PLAIN)
+    @RunOnVirtualThread
     public String hello(@PathParam("name") String name) {
         String nextInstrument = getNextInstrument();
         LOGGER.info(name + " got " + nextInstrument);
